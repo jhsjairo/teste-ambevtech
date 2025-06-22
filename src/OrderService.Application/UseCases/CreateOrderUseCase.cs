@@ -13,29 +13,38 @@ namespace OrderService.Application.UseCases
 
     public class CreateOrderUseCase
     {
-        private readonly IOrderRepository _orderRepository;
+         
+            private readonly IOrderRepository _orderRepository;
+            private readonly IOrderCache _orderCache;
 
-        public CreateOrderUseCase(IOrderRepository orderRepository)
-        {
-            _orderRepository = orderRepository;
-        }
-
-        public async Task ExecuteAsync(CreateOrderDto dto)
-        {
-            if (await _orderRepository.ExistsAsync(dto.ExternalOrderId))
+            public CreateOrderUseCase(IOrderRepository orderRepository, IOrderCache orderCache)
             {
-                // Ignorar duplicado ou lançar exceção, conforme política
-                return;
+                _orderRepository = orderRepository;
+                _orderCache = orderCache;
             }
 
-            var order = new Order(dto.ExternalOrderId);
-
-            foreach (var item in dto.Items)
+            public async Task ExecuteAsync(CreateOrderDto dto)
             {
-                order.AddItem(item.ProductName, item.Quantity, item.UnitPrice);
-            }
+                if (await _orderRepository.ExistsAsync(dto.ExternalOrderId))
+                {
+                    // Ignorar duplicado ou lançar exceção, conforme política
+                    return;
+                }
 
-            await _orderRepository.SaveAsync(order);
-        }
+                var order = new Order(dto.ExternalOrderId);
+
+                foreach (var item in dto.Items)
+                {
+                    order.AddItem(item.ProductName, item.Quantity, item.UnitPrice);
+                }
+
+                await _orderRepository.SaveAsync(order);
+
+              
+                await _orderCache.SetOrderByExternalIdAsync(order.ExternalOrderId, order, TimeSpan.FromMinutes(30));
+
+                
+            }
+       
     }
 }

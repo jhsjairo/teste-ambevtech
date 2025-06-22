@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
 using StackExchange.Redis;
 using OrderService.Application.Interfaces;
 using OrderService.Domain.Entities;
@@ -23,14 +23,13 @@ namespace OrderService.Infrastructure.Cache
 
             if (value.IsNullOrEmpty)
                 return null;
-
-            return JsonSerializer.Deserialize<IEnumerable<Order>>(value!);
+            return JsonConvert.DeserializeObject<IEnumerable<Order>>(value!); 
         }
 
         public async Task SetOrdersByStatusAsync(OrderStatus status, IEnumerable<Order> orders, TimeSpan expiration)
         {
             string key = $"orders:status:{status}";
-            var json = JsonSerializer.Serialize(orders);
+            var json = JsonConvert.SerializeObject(orders); 
             await _db.StringSetAsync(key, json, expiration);
         }
 
@@ -41,14 +40,13 @@ namespace OrderService.Infrastructure.Cache
 
             if (value.IsNullOrEmpty)
                 return null;
-
-            return JsonSerializer.Deserialize<Order>(value!);
+            return JsonConvert.DeserializeObject<Order>(value!); 
         }
 
         public async Task SetOrderByExternalIdAsync(string externalOrderId, Order order, TimeSpan expiration)
         {
             string key = $"orders:external:{externalOrderId}";
-            var json = JsonSerializer.Serialize(order);
+            var json = JsonConvert.SerializeObject(order); 
             await _db.StringSetAsync(key, json, expiration);
         }
     }
