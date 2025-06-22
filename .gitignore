@@ -1,0 +1,69 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dbmdl
+*.vsp
+*.pdb
+*.log
+
+## EF Core Migrations snapshot
+**/Migrations/*.Designer.cs
+**/Migrations/*ModelSnapshot.cs
+
+## Redis
+*.rdb
+*.aof
+dump.rdb
+appendonly.aof
+
+## SQL Server (Docker)
+*.mdf
+*.ldf
+*.ndf
+
+## Rider
+.idea/
+*.sln.iml
+
+## VS Code
+.vscode/
+
+## Docker
+**/.docker/
+docker-compose.override.yml
+.env
+
+## Test Results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## User secrets
+secrets.json
+
+## Build output
+*.dll
+*.exe
+*.deps.json
+*.runtimeconfig.json
+
+## Publish artifacts
+publish/
+artifacts/
+
+## Logs
+*.log
+logs/
+log/
+
+## System files
+.DS_Store
+Thumbs.db
+
+## Environment config (opcional)
+appsettings.*.local.json
